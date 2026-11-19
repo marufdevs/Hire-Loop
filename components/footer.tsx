@@ -51,7 +51,7 @@ function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="px-4 pb-6 sm:px-6">
+    <footer className="relative z-10 px-4 pb-6 sm:px-6">
       <div className="mx-auto max-w-[1320px] rounded-2xl bg-footer px-6 py-10 sm:px-10">
         {/* Top: brand + link columns */}
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-16">
@@ -122,7 +122,10 @@ function Footer() {
           <div className="flex flex-col items-center gap-2 text-center text-base leading-[1.9] text-footer-muted sm:flex-row sm:gap-6">
             <p>Copyright © {year} — HireLoop</p>
             <p>
-              <Link href="/terms" className="transition-colors hover:text-brand">
+              <Link
+                href="/terms"
+                className="transition-colors hover:text-brand"
+              >
                 Terms &amp; Policy
               </Link>
               {" - "}

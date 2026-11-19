@@ -129,7 +129,11 @@ function Navbar() {
           aria-label={open ? "Close menu" : "Open menu"}
           className="inline-flex size-11 items-center justify-center rounded-lg border border-nav-border bg-nav-pill text-nav-foreground lg:hidden"
         >
-          {open ? <XIcon className="size-5" /> : <MenuIcon className="size-5" />}
+          {open ? (
+            <XIcon className="size-5" />
+          ) : (
+            <MenuIcon className="size-5" />
+          )}
         </button>
       </nav>
 
