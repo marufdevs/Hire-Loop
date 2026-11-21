@@ -72,11 +72,22 @@ function SubmitButton({
 }
 
 
-function FormNotice({ children }: { children: React.ReactNode }) {
+function FormNotice({
+  children,
+  variant = "success",
+}: {
+  children: React.ReactNode
+  variant?: "success" | "error"
+}) {
   return (
     <p
-      role="status"
-      className="rounded-xl border border-brand/40 bg-brand/10 px-4 py-3 text-sm text-foreground"
+      role={variant === "error" ? "alert" : "status"}
+      className={cn(
+        "rounded-xl border px-4 py-3 text-sm",
+        variant === "error"
+          ? "border-destructive/40 bg-destructive/10 text-destructive"
+          : "border-brand/40 bg-brand/10 text-foreground"
+      )}
     >
       {children}
     </p>

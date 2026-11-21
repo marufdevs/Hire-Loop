@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Building2Icon, UserIcon } from "lucide-react"
 
 import {
@@ -22,6 +23,7 @@ import {
   type FieldErrors,
 } from "@/components/auth/validation"
 import { Input } from "@/components/ui/input"
+import { authClient } from "@/lib/auth-client"
 
 export type Role = "seeker" | "recruiter"
 
@@ -43,9 +45,10 @@ const ROLES = [
 const PASSWORD_HINT = `At least ${MIN_PASSWORD_LENGTH} characters`
 
 function RegisterForm({ defaultRole }: { defaultRole: Role }) {
+  const router = useRouter()
   const [errors, setErrors] = React.useState<FieldErrors>({})
   const [pending, setPending] = React.useState(false)
-  const [submittedRole, setSubmittedRole] = React.useState<Role | null>(null)
+  const [formError, setFormError] = React.useState<string | null>(null)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -63,15 +66,50 @@ function RegisterForm({ defaultRole }: { defaultRole: Role }) {
       password: validatePassword(password),
     })
     setErrors(nextErrors)
-    setSubmittedRole(null)
+    setFormError(null)
     if (Object.keys(nextErrors).length > 0) return
 
-    // UI only for now: pretend to send, then explain nothing was sent.
-    // Replace this with the real sign-up call when the backend is ready.
     setPending(true)
-    await new Promise((resolve) => setTimeout(resolve, 700))
-    setPending(false)
-    setSubmittedRole(role)
+    try {
+      const { error } = await authClient.signUp.email({
+        name,
+        email,
+        password,
+        image: photoUrl || undefined,
+        role,
+        callbackURL: "/",
+      })
+
+      if (error) {
+        const code: string | undefined = error.code
+
+        if (
+          code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL" ||
+          code === "USER_ALREADY_EXISTS"
+        ) {
+          setErrors({ email: "An account with this email already exists" })
+        } else if (code === "INVALID_EMAIL") {
+          setErrors({ email: "Enter a valid email address" })
+        } else if (code === "PASSWORD_TOO_SHORT") {
+          setErrors({
+            password: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+          })
+        } else {
+          setFormError(
+            error.message || "We couldn't create your account. Please try again."
+          )
+        }
+        return
+      }
+
+      // Signup also creates a session, so take the user straight home.
+      router.push("/")
+      router.refresh()
+    } catch {
+      setFormError("Something went wrong. Check your connection and try again.")
+    } finally {
+      setPending(false)
+    }
   }
 
   // Clear a field's error as soon as the user edits it
@@ -173,14 +211,7 @@ function RegisterForm({ defaultRole }: { defaultRole: Role }) {
         />
       </Field>
 
-      {submittedRole && (
-        <FormNotice>
-          Looks good! Your{" "}
-          {submittedRole === "recruiter" ? "recruiter" : "job seeker"} account
-          details are valid, but sign up isn&apos;t connected to a server yet,
-          so no account was created.
-        </FormNotice>
-      )}
+      {formError && <FormNotice variant="error">{formError}</FormNotice>}
 
       <SubmitButton pending={pending}>
         {pending ? "Creating account…" : "Create account"}
