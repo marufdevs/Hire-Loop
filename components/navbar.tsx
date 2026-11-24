@@ -6,6 +6,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { MenuIcon, XIcon } from "lucide-react"
 
+import { NavbarButtons } from "@/components/navbar/button"
 import { cn } from "@/lib/utils"
 
 const NAV_LINKS = [
@@ -96,28 +97,7 @@ function Navbar() {
 
           <span aria-hidden className="h-6 w-px bg-nav-divider" />
 
-          <div className="flex items-center gap-4">
-            <Link
-              href="/login"
-              className={cn(
-                "inline-flex items-center justify-center px-6 text-lg font-semibold text-brand transition-opacity hover:opacity-80",
-                isHome ? "h-[58px] rounded-xl" : "h-[38px] rounded-lg px-4",
-                buttonGlow
-              )}
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/register"
-              className={cn(
-                "inline-flex h-[52px] items-center justify-center border border-[rgb(9_10_21/0.1)] bg-brand px-6 text-lg font-medium text-brand-foreground transition-colors hover:bg-brand/85",
-                isHome ? "rounded-xl" : "rounded-lg",
-                buttonGlow
-              )}
-            >
-              Get Started
-            </Link>
-          </div>
+          <NavbarButtons isHome={isHome} />
         </div>
 
         {/* Mobile toggle */}

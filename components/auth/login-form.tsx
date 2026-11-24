@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 
 import {
   authInputClass,
@@ -16,11 +17,13 @@ import {
   type FieldErrors,
 } from "@/components/auth/validation"
 import { Input } from "@/components/ui/input"
+import { authClient } from "@/lib/auth-client"
 
 function LoginForm() {
+  const router = useRouter()
   const [errors, setErrors] = React.useState<FieldErrors>({})
   const [pending, setPending] = React.useState(false)
-  const [submitted, setSubmitted] = React.useState(false)
+  const [formError, setFormError] = React.useState<string | null>(null)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -33,20 +36,44 @@ function LoginForm() {
       password: password ? undefined : "Enter your password",
     })
     setErrors(nextErrors)
-    setSubmitted(false)
+    setFormError(null)
     if (Object.keys(nextErrors).length > 0) return
 
-    // UI only for now: pretend to send, then explain nothing was sent.
-    // Replace this with the real sign-in call when the backend is ready.
     setPending(true)
-    await new Promise((resolve) => setTimeout(resolve, 700))
-    setPending(false)
-    setSubmitted(true)
+    try {
+      const { error } = await authClient.signIn.email({
+        email,
+        password,
+        callbackURL: "/",
+      })
+
+      if (error) {
+        if (error.code === "INVALID_EMAIL_OR_PASSWORD") {
+          setFormError("Incorrect email or password. Please try again.")
+        } else if (error.code === "EMAIL_NOT_VERIFIED") {
+          setFormError("Please verify your email address before signing in.")
+        } else {
+          setFormError(
+            error.message || "We couldn't sign you in. Please try again."
+          )
+        }
+        return
+      }
+
+      // Signing in creates a session, so take the user straight home.
+      router.push("/")
+      router.refresh()
+    } catch {
+      setFormError("Something went wrong. Check your connection and try again.")
+    } finally {
+      setPending(false)
+    }
   }
 
   // Clear a field's error as soon as the user edits it
   function handleChange(event: React.FormEvent<HTMLFormElement>) {
     const { name } = event.target as HTMLInputElement
+    setFormError(null)
     if (!errors[name]) return
     setErrors((prev) => {
       const next = { ...prev }
@@ -84,12 +111,7 @@ function LoginForm() {
         />
       </Field>
 
-      {submitted && (
-        <FormNotice>
-          Looks good! Sign in isn&apos;t connected to a server yet, so nothing
-          was sent.
-        </FormNotice>
-      )}
+      {formError && <FormNotice variant="error">{formError}</FormNotice>}
 
       <SubmitButton pending={pending}>
         {pending ? "Signing in…" : "Sign In"}
