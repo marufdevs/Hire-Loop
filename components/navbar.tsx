@@ -8,12 +8,9 @@ import { MenuIcon, XIcon } from "lucide-react"
 
 import { NavbarButtons } from "@/components/navbar/button"
 import { cn } from "@/lib/utils"
+import { useSession } from "@/lib/auth-client"
 
-const NAV_LINKS = [
-  { label: "Browse Jobs", href: "/jobs" },
-  { label: "Company", href: "/companies" },
-  { label: "Pricing", href: "/pricing" },
-] as const
+
 
 // Inner white glow used on the Figma buttons
 const buttonGlow = "shadow-[inset_0_3px_10px_rgb(255_255_255/0.2)]"
@@ -27,6 +24,13 @@ function Navbar() {
   const isHome = pathname === "/"
   const [open, setOpen] = React.useState(false)
   const close = () => setOpen(false)
+  const {data: session} = useSession()
+  const NAV_LINKS = [
+    { label: "Browse Jobs", href: "/jobs" },
+    { label: "Company", href: "/companies" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "Dashboard", href: `/dashboard/${session?.user?.role}` },
+  ] as const
 
   React.useEffect(() => {
     if (!open) return

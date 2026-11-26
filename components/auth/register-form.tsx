@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Building2Icon, UserIcon } from "lucide-react"
+import { Building2Icon, ShieldCheckIcon, UserIcon } from "lucide-react"
 
 import {
   authInputClass,
@@ -24,10 +24,16 @@ import {
 } from "@/components/auth/validation"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
+import { parseRole, type Role } from "@/lib/roles"
 
-export type Role = "seeker" | "recruiter"
+type RoleOption = {
+  value: Role
+  label: string
+  description: string
+  icon: typeof UserIcon
+}
 
-const ROLES = [
+const ROLES: readonly RoleOption[] = [
   {
     value: "seeker",
     label: "Job Seeker",
@@ -40,7 +46,13 @@ const ROLES = [
     description: "Post jobs and hire talent",
     icon: Building2Icon,
   },
-] as const
+  {
+    value: "admin",
+    label: "Admin",
+    description: "Manage the platform",
+    icon: ShieldCheckIcon,
+  },
+]
 
 const PASSWORD_HINT = `At least ${MIN_PASSWORD_LENGTH} characters`
 
@@ -53,7 +65,7 @@ function RegisterForm({ defaultRole }: { defaultRole: Role }) {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
-    const role = data.get("role") === "recruiter" ? "recruiter" : "seeker"
+    const role = parseRole(data.get("role"))
     const name = String(data.get("name") ?? "").trim()
     const email = String(data.get("email") ?? "").trim()
     const photoUrl = String(data.get("photoUrl") ?? "").trim()
@@ -133,7 +145,7 @@ function RegisterForm({ defaultRole }: { defaultRole: Role }) {
       {/* Role picker: real radio buttons styled as cards */}
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-2 text-sm font-medium">I want to</legend>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {ROLES.map((role) => {
             const Icon = role.icon
             return (

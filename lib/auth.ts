@@ -15,13 +15,14 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: "string",
+        type: ["seeker", "recruiter", "admin"],
         required: false,
         defaultValue: "seeker",
         input: true,
         transform: {
-          // Only the two supported roles may reach the database.
-          input: (value) => (value === "recruiter" ? "recruiter" : "seeker"),
+          // Only the supported roles may reach the database.
+          input: (value) =>
+            value === "recruiter" || value === "admin" ? value : "seeker",
         },
       },
     },

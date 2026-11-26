@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import Link from "next/link"
 
 import { AuthCard } from "@/components/auth/auth-card"
-import { RegisterForm, type Role } from "@/components/auth/register-form"
+import { RegisterForm } from "@/components/auth/register-form"
+import { parseRole } from "@/lib/roles"
 
 export const metadata: Metadata = {
   title: "Create Account — HireLoop",
@@ -13,9 +14,9 @@ export default async function RegisterPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  // /register?role=recruiter opens the form with "Recruiter" selected
+  // /register?role=recruiter or ?role=admin selects that role by default
   const { role } = await searchParams
-  const defaultRole: Role = role === "recruiter" ? "recruiter" : "seeker"
+  const defaultRole = parseRole(role)
 
   return (
     <AuthCard
