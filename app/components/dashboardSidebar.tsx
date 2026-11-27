@@ -26,6 +26,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { useSession } from "@/lib/auth-client"
 import { parseRole, type Role } from "@/lib/roles"
@@ -100,10 +101,10 @@ const DASHBOARD_MENU_ITEMS: Record<Role, readonly MenuItem[]> = {
 
 const DashboardSidebar = () => {
   const pathname = usePathname()
+  const { setOpenMobile } = useSidebar()
   const { data: session, isPending } = useSession()
   const role = parseRole(session?.user?.role)
   const items = DASHBOARD_MENU_ITEMS[role]
-  console.log(items);
   
 
   return (
@@ -128,6 +129,7 @@ const DashboardSidebar = () => {
                     <SidebarMenuButton
                       render={<Link href={item.url} />}
                       isActive={pathname === item.url}
+                      onClick={() => setOpenMobile(false)}
                     >
                       <item.icon />
                       <span>{item.name}</span>

@@ -1,11 +1,7 @@
-import React from "react"
+import { CreateJobForm } from "@/app/components/recruiter/create-job-form"
 
 const AddNewJob = () => {
-  return (
-    <div>
-      <h2>AddNewJob</h2>
-    </div>
-  )
+  return <CreateJobForm />
 }
 
 export default AddNewJob
