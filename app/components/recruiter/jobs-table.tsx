@@ -274,7 +274,7 @@ export function JobsTable({
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1200px] min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+    <div className="mx-auto w-full max-w-300 min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <nav
@@ -289,10 +289,10 @@ export function JobsTable({
             <span className="text-[#c3c0ff]">Job Listings &amp; Postings</span>
           </nav>
 
-          <h1 className="mt-4 text-2xl font-medium tracking-[-0.8px] text-white sm:text-[32px] sm:leading-[42px]">
+          <h1 className="mt-4 text-2xl font-medium tracking-[-0.8px] text-white sm:text-[32px] sm:leading-10.5">
             Manage Job Posts
           </h1>
-          <p className="mt-2 max-w-[560px] text-[13px] leading-5 text-[#a0a0ab]">
+          <p className="mt-2 max-w-140 text-[13px] leading-5 text-[#a0a0ab]">
             Review live listings, monitor applicants, and update job details
             across your organization.
           </p>
@@ -345,17 +345,23 @@ export function JobsTable({
           {/* Desktop table */}
           <div className="mt-6 hidden overflow-hidden rounded-2xl border border-[#232327] bg-[#151516] lg:block">
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[1040px] border-collapse text-left">
+              <table className="w-full min-w-260 border-collapse text-left">
                 <thead>
                   <tr className="border-b border-[#232327] text-[11px] font-medium tracking-[0.08em] text-[#a0a0ab] uppercase">
-                    <th className="px-5 py-3.5 font-medium">Job Title &amp; Dept</th>
-                    <th className="px-5 py-3.5 font-medium">Company &amp; Location</th>
+                    <th className="px-5 py-3.5 font-medium">
+                      Job Title &amp; Dept
+                    </th>
+                    <th className="px-5 py-3.5 font-medium">
+                      Company &amp; Location
+                    </th>
                     <th className="px-5 py-3.5 font-medium">Type</th>
                     <th className="px-5 py-3.5 font-medium">Compensation</th>
                     <th className="px-5 py-3.5 font-medium">Applicants</th>
                     <th className="px-5 py-3.5 font-medium">Status</th>
                     <th className="px-5 py-3.5 font-medium">Deadline</th>
-                    <th className="px-5 py-3.5 text-right font-medium">Actions</th>
+                    <th className="px-5 py-3.5 text-right font-medium">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
